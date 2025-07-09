@@ -8,6 +8,8 @@
 <body>
   <h1>🖥️ Remote PC Control</h1>
 
+  <p id="status" style="font-weight: bold; font-size: 18px;">Status: Checking...</p>
+
   <div>
     <button onclick="sendCommand('shutdown')">🔌 Shutdown PC</button>
     <button onclick="sendCommand('screenshot')">📸 Take Screenshot</button>
@@ -22,25 +24,47 @@
   <img src="/get_screenshot" width="600" id="screen" alt="Live Screen" />
 
   <script>
+    // Auto-refresh screenshot
     setInterval(() => {
       document.getElementById("screen").src = '/get_screenshot?cache=' + new Date().getTime();
     }, 5000);
 
+    // Check online status
+    function checkStatus() {
+      fetch('/status')
+        .then(res => res.json())
+        .then(data => {
+          const el = document.getElementById("status");
+          if (data.status === "online") {
+            el.textContent = "Status: ✅ Online";
+            el.style.color = "lime";
+          } else {
+            el.textContent = "Status: ❌ Offline";
+            el.style.color = "red";
+          }
+        });
+    }
+
+    setInterval(checkStatus, 5000);
+    checkStatus();
+
+    // Send shutdown/screenshot command
     function sendCommand(type) {
-      fetch('/add_command?pass=mysecretpass', {
+      fetch('/add_command?pass=@REDXPRIME', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: type })
       });
     }
 
+    // Send popup warning
     function sendPopup() {
       const msg = document.getElementById("popupMsg").value;
       if (!msg) {
         alert("⚠️ Please enter a message.");
         return;
       }
-      fetch('/add_command?pass=mysecretpass', {
+      fetch('/add_command?pass=@REDXPRIME', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'popup', message: msg })
