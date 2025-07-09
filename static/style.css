@@ -9,8 +9,16 @@ body {
 
 h1 {
   font-size: 2.5em;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: #ff4747;
+}
+
+#status {
+  margin-top: 5px;
+  margin-bottom: 25px;
+  font-size: 18px;
+  font-weight: bold;
+  transition: color 0.5s ease;
 }
 
 button {
@@ -44,4 +52,5 @@ img {
   border-radius: 10px;
   margin-top: 20px;
   box-shadow: 0 0 15px #000;
+  max-width: 90%;
 }
