@@ -22,12 +22,10 @@
   <img src="/get_screenshot" width="600" id="screen" alt="Live Screen" />
 
   <script>
-    // Auto-refresh screenshot every 5 seconds
     setInterval(() => {
       document.getElementById("screen").src = '/get_screenshot?cache=' + new Date().getTime();
     }, 5000);
 
-    // Send basic command (shutdown/screenshot)
     function sendCommand(type) {
       fetch('/add_command?pass=mysecretpass', {
         method: 'POST',
@@ -36,7 +34,6 @@
       });
     }
 
-    // Send warning message
     function sendPopup() {
       const msg = document.getElementById("popupMsg").value;
       if (!msg) {
@@ -48,7 +45,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'popup', message: msg })
       });
-      document.getElementById("popupMsg").value = ""; // Clear input
+      document.getElementById("popupMsg").value = "";
     }
   </script>
 </body>
